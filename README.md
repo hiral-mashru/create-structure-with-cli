@@ -16,9 +16,17 @@
 
 =>	It creates middlewares. It asks for module name, in which developer wants to create a middleware and api name, in which this middleware will be used. Then it asks for middleware file name and function name (separated by ‘.’ and middlewares separated by ‘,’) and it creates files and functions in middlewares folder of given module’s folder, if file already exists, then it appends the data. It also adds the middlewares information provided by developer to routes.json.
 
-•	`framework globalMiddleware`
+•	`framework create-globalMiddleware`
 
 =>	It creates global middlewares. It asks for module name, in which developer wants to create a global middleware and api name, in which this global middleware will be used. Then it asks for global middleware file name and function name (separated by ‘.’ and middlewares separated by ‘,’) and it creates files and functions in middlewares folder, if file already exists, then it appends the data. It also adds the global middlewares information provided by developer to routes.json.
+
+•	`framework create-function`
+
+=>  It asks for module level functions and global level functions. In module level function, it provides available modules and asks for creating new module to create function in that module. In global level function, it will create functions folder in root and will create the file. Then it will ask for function’s file name and function name in filename.functionName format.
+
+•	`framework create-service`
+
+=>   It asks for module level services and global level services. In module level service, it provides available modules and asks for creating new module to create service in that module. In global level service, it will create services folder in root and will create the file. Then it will ask for service’s file name and function name in filename.functionName format.
  
 •	`framework db-config`
 
