@@ -4,11 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk')
 const Confirm = require('prompt-confirm')
+const [,,...args] = process.argv // to parse command line arguments
+const[type,...modulle] = args
 const rootDir = process.cwd()
 const download = require('download-git-repo')
 const inquirer = require('inquirer');
-const { program } = require('commander');
-const pkgConfig = require('./package.json')
 
 let devusername="root";
 let devpassword=null;
@@ -35,9 +35,8 @@ let databaseJsonData=`{
   }
 }`
 
-program.version(pkgConfig.version).description(pkgConfig.description)
-
-program.command('create-folder <module>').description('To create folder.').action((modulle)=>{  
+if(type==='create-folder') {
+    
     if(modulle){
         if (!fs.existsSync(String(modulle))) {
             fs.mkdir(path.join(rootDir, String(modulle)),{ recursive: true }, (err) => { 
@@ -53,9 +52,7 @@ program.command('create-folder <module>').description('To create folder.').actio
         console.log(chalk.black.bgYellowBright('WARNING:')+'Provide a module name')
     }
 
-})
-
-program.command('init').description('To initialize the basic setup.').action(()=>{
+} else if(type === 'init') {
     fs.readdir(rootDir, function(err, files){
         if(files.length){
             new Confirm({message: 'You have already done initialization. Do you want to do init?', default: false})
@@ -89,28 +86,20 @@ program.command('init').description('To initialize the basic setup.').action(()=
             })
         }
     })
-})
-
-program.command('create-module <module>').description('To create module in api folder').action((modulle)=>{
+} else if(type === 'create-module') {
     if(modulle.length === 0){
         console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module name...')
         return
     }
-    if(modulle){
-        createModule(modulle)
-    } else {
-        console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
+    for(let m of modulle){
+        if(m) {
+            createModule(m)
+        } else {
+            console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
+        }
     }
-    // for(let m of modulle){
-    //     if(m) {
-    //         createModule(m)
-    //     } else {
-    //         console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
-    //     }
-    // }
-})
 
-program.command('db-config').description('To configure the database.').action(()=>{
+} else if(type === 'db-config'){
     fs.readdir(path.join(rootDir),function(err,files){
         if (!files.includes('config')) {
             fs.mkdir(path.join(rootDir,'config'),{ recursive: true }, (err) => { 
@@ -121,9 +110,7 @@ program.command('db-config').description('To configure the database.').action(()
         }
     }) 
     dbConfig()
-})
-
-program.command('create-api').description('To create api.').action(()=>{
+} else if(type === 'create-api'){
     let flss = fs.readdirSync(path.join(rootDir))
     if(!flss.includes('api')){
         fs.mkdirSync(path.join(rootDir,'api'),{ recursive: true });
@@ -161,9 +148,7 @@ program.command('create-api').description('To create api.').action(()=>{
             createApi(answers['modules'])
         }
     })
-})
-
-program.command('create-middleware').description('To create module level middleware.').action(()=>{
+} else if(type === 'create-middleware'){
     fs.readdir(path.join(rootDir),function(err,files){
         if(!files.includes('api')){
             fs.mkdirSync(path.join(rootDir,'api'),{ recursive: true });
@@ -190,12 +175,10 @@ program.command('create-middleware').description('To create module level middlew
                 createMiddleware(answers['modules'])
             })
         } else {
-            console.log(chalk.red('ERROR:')+' There are no folders at '+rootDir+'/api, create module using "framework create-module"')
+            console.log(chalk.black.bgYellowBright('WARNING:')+' There are no folders at '+rootDir+'/api, create module using "framework create-module"')
         }
     })
-})
-
-program.command('create-globalMiddleware').description('To create global middleware.').action(()=>{
+} else if(type === 'create-globalMiddleware'){
     fs.readdir(path.join(rootDir),function(err,files){
         if(!files.includes('api')){
             fs.mkdirSync(path.join(rootDir,'api'),{ recursive: true });
@@ -222,12 +205,10 @@ program.command('create-globalMiddleware').description('To create global middlew
                 createGlobalMiddleware(answers['modules'])
             })
         } else {
-            console.log(chalk.red('ERROR:')+' There are no folders at '+rootDir+'/api, create module using "framework create-module"')
+            console.log(chalk.black.bgYellowBright('WARNING:')+' There are no folders at '+rootDir+'/api, create module using "framework create-module"')
         }
     })
-})
-
-program.command('create-function').description('To create function.').action(()=>{
+} else if(type === 'create-function'){
     inquirer.prompt({
         type: 'list',
         name: 'function',
@@ -278,9 +259,7 @@ program.command('create-function').description('To create function.').action(()=
             createGlobalFunction()
         }
     })
-})
-
-program.command('create-service').description('To create service.').action(()=>{
+} else if(type === 'create-service'){
     inquirer.prompt({
         type: 'list',
         name: 'service',
@@ -331,9 +310,16 @@ program.command('create-service').description('To create service.').action(()=>{
             createGlobalService()
         }
     })
-})
-
-program.parse(process.argv);
+} else if(type === 'help'){
+    console.log(chalk.black.bgYellowBright('framework init')+' => It creates the whole folder structure and also will ask for database configuration.')
+    console.log(chalk.black.bgYellowBright('framework create-module <moduleName>')+' => It creates module consistes of controllers,services,middlewares files and folders with routes.json file.')
+    console.log(chalk.black.bgYellowBright('framework create-api')+' => It generates the api in given module.')
+    console.log(chalk.black.bgYellowBright('framework create-middleware')+' => It generates the middleware in given module.')
+    console.log(chalk.black.bgYellowBright('framework create-globalMiddleware')+' => It generates the global middleware in given module.')
+    console.log(chalk.black.bgYellowBright('framework db-config')+' => It does configuration of database.')
+} else {
+    console.log(chalk.black.bgYellowBright('WARNING:')+' Enter correct command. Need help ? Go for "framework help"')
+}
 
 function createStructure(){
     fs.mkdir(path.join(rootDir, 'api'),{ recursive: true }, (err) => { 
@@ -1020,7 +1006,7 @@ function createMiddleware(moduule){
             middlewareConfigure(answers['middleware'],moduule)
         })
     } else {
-        console.log(chalk.red('ERROR:')+' There is no api. Create api with "framework create-api"')
+        console.log(chalk.black.bgYellowBright('WARNING:')+' There is no api. Create api with "framework create-api"')
     }
 }
 
@@ -1084,7 +1070,7 @@ function createGlobalMiddleware(moduule){
             globalMiddlewareConfigure(answers['middleware'],moduule)
         })
     } else {
-        console.log(chalk.red('ERROR:')+' There is no api. Create api with "framework create-api"')
+        console.log(chalk.black.bgYellowBright('WARNING:')+' There is no api. Create api with "framework create-api"')
     }
 }
 
