@@ -91,23 +91,18 @@ program.command('init').description('To initialize the basic setup.').action(()=
     })
 })
 
-program.command('create-module <module>').description('To create module in api folder').action((modulle)=>{
+program.command('create-module <module...>').description('To create module in api folder').action((modulle)=>{
     if(modulle.length === 0){
         console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module name...')
         return
     }
-    if(modulle){
-        createModule(modulle)
-    } else {
-        console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
+    for(let m of modulle){
+        if(m) {
+            createModule(m)
+        } else {
+            console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
+        }
     }
-    // for(let m of modulle){
-    //     if(m) {
-    //         createModule(m)
-    //     } else {
-    //         console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
-    //     }
-    // }
 })
 
 program.command('db-config').description('To configure the database.').action(()=>{
