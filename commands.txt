@@ -2,17 +2,24 @@ npm init
 
 chmod +x cli.js
 
-npm install -g .
+in package.json
+"bin": {
+    "framework": "cli.js" 
+  },
+  "preferGlobal": true,
 
-run: C:\Users\Administrator\AppData\Roaming\npm\framework
+npm install -g . //add the package in C:\Users\Administrator\AppData\Roaming\npm\node_modules\@hiralmashru
+
+run: C:\Users\Administrator\AppData\Roaming\npm\framework OR framework
 
 //to publish
 npm login 
 
+//for registration
 npm adduser --registry
 npm whoami --registry
 
+//publish publicly
 npm publish --access public
 
-
-@hiralmashru/folder-structure-cli
+@hiralmashru/cli (package-name)

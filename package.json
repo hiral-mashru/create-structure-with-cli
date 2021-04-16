@@ -1,11 +1,15 @@
 {
-  "name": "@hiralmashru/test",
-  "version": "1.0.0",
+  "name": "@hiralmashru/cli",
+  "version": "1.0.1",
   "description": "",
   "main": "cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "framework": "cli.js" 
+  },
+  "preferGlobal": true,
   "author": "Hiral Mashru",
   "license": "ISC",
   "dependencies": {
