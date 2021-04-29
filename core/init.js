@@ -8,7 +8,7 @@ const[type,...modulle] = args
 const rootDir = process.cwd()
 const download = require('download-git-repo')
 const inquirer = require('inquirer');
-const createStructure = require('../core/createStructure')
+const createStructure = require('../helpers/createStructure')
 
 function init(){
 fs.readdir(rootDir, function(err, files){

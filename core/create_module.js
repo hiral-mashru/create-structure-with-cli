@@ -8,25 +8,20 @@ const[type,...modulle] = args
 const rootDir = process.cwd()
 const download = require('download-git-repo')
 const inquirer = require('inquirer');
-const createModule = require('../core/createModule')
+const createModule = require('../helpers/createModule')
 
 function create_module(modulle){
     if(modulle.length === 0){
         console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module name...')
         return
     }
-    if(modulle){
-        createModule(modulle)
-    } else {
-        console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
+    for(let m of modulle){
+        if(m) {
+            createModule(m)
+        } else {
+            console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
+        }
     }
-    // for(let m of modulle){
-    //     if(m) {
-    //         createModule(m)
-    //     } else {
-    //         console.log(chalk.black.bgYellowBright('WARNING:')+' Provide module\'s name')
-    //     }
-    // }
 }
 
 module.exports = create_module

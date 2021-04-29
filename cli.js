@@ -9,12 +9,13 @@ const download = require('download-git-repo')
 const inquirer = require('inquirer');
 const { program } = require('commander');
 const pkgConfig = require('./package.json')
+const gitRepoLink = 'hiral-mashru/boilerplate-structure'
 
 let devusername="root";
-let devpassword=null;
+let devpassword="";
 let devdatabase="database_development";
 let prousername="root";
-let propassword=null;
+let propassword="";
 let prodatabase="database_production";
 let databaseJsonData=`{
   "development": {
@@ -65,7 +66,7 @@ program.command('init').description('To initialize the basic setup.').action(()=
                     var spinner = new Spinner('processing.. %s');
                     spinner.setSpinnerString('|/-\\');
                     spinner.start();
-                    download('hiral-mashru/boilerplate-structure', rootDir, function (err) {
+                    download(gitRepoLink, rootDir, function (err) {
                         flag = true
                         console.log(err ? chalk.red('Error in downloading folder structure') : chalk.green('Success'))
                         spinner.stop(true)
@@ -79,7 +80,7 @@ program.command('init').description('To initialize the basic setup.').action(()=
             var spinner = new Spinner('processing.. %s');
             spinner.setSpinnerString('|/-\\');
             spinner.start();
-            download('hiral-mashru/boilerplate-structure', rootDir, function (err) {
+            download(gitRepoLink, rootDir, function (err) {
                 flag = true
                 console.log(err ? chalk.red('Error in downloading folder structure') : chalk.green('Success'))
                 spinner.stop(true)
@@ -386,6 +387,11 @@ function createStructure(){
             console.log(chalk.red('ERROR:')+` Directory middlewares can't be created`) 
         } 
     });
+    fs.mkdir(path.join(rootDir, 'services'),{ recursive: true }, (err) => { 
+        if (err) { 
+            console.log(chalk.red('ERROR:')+` Directory services can't be created`) 
+        } 
+    });
     if(!fs.existsSync(rootDir+'/middlewares/middleware.js')) {
         fs.writeFile(path.join(rootDir,'middlewares','middleware.js'),`module.exports = {\n middleware: (req,res,next)=> {\n  console.log("This is global middleware")\n  res.send('This is global middleware')\n  next();\n }\n}`, function(err, result) {
             if(err) console.log(chalk.red('ERROR:')+` File /middlewares/middleware.js can't be created`) 
@@ -462,12 +468,15 @@ function dbConfig(){
         .run()
         .then(function(answer){
             if(answer){
-                setting = 'dev'
-                createJSON(setting)
+                createJSON('dev')
             } else {
-                console.log("Go for production env setup...")
-                setting = 'prod'
-                createJSON(setting)
+                new Confirm({message:'Do you want to setup production env?'})
+                .run()
+                .then(function(ans){
+                    if(ans){
+                        createJSON('prod')
+                    }
+                })
             }
         })
 }
@@ -499,9 +508,9 @@ function createJSON(setting){
                 if (value.length) {
                   return true;
                 } else {
-                  return 'Enter dataase name:';
+                  return 'Enter database name:';
                 }
-              }
+            }
         },
         {
             type: 'input',
@@ -540,9 +549,7 @@ function createJSON(setting){
         "logging": false
     }
 }`
-            // fs.writeFile(path.join(rootDir, 'config','database.json'),"{\"development\":{\"username\":\""+answers['username']+"\",\"password\":\""+answers['password']+"\",\"database\":\""+answers['database']+"\",\"host\":\""+answers['host']+"\",\"dialect\":\""+answers['dialect']+"\",\"logging\":"+answers['logging']+"}}", function(err, result) {
-            //     if(err) console.log(chalk.red('ERROR:')+` File config/database.json can't be created`) 
-            // })
+            fs.appendFileSync(path.join(rootDir,'.env'),'\nNODE_ENV=development')
             fs.writeFile(path.join(rootDir, 'config','database.json'),(databaseJsonData), function(err, result) {
                 if(err) console.log(chalk.red('ERROR:')+` File config/database.json can't be created`) 
             })
@@ -566,6 +573,7 @@ function createJSON(setting){
         "logging": ${answers['logging']}
     }
 }`
+            fs.appendFileSync(path.join(rootDir,'.env'),'\nNODE_ENV=production')
             fs.writeFile(path.join(rootDir, 'config','database.json'),(databaseJsonData), function(err, result) {
                 if(err) console.log(chalk.red('ERROR:')+` File config/database.json can't be created`) 
             })
