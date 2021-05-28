@@ -6,7 +6,7 @@ const inquirer = require('inquirer');
 const createModule = require('../helpers/createModule')
 const createApi = require('../helpers/createApi')
 
-function createApi(){
+function create_api(){
     let flss = fs.readdirSync(path.join(rootDir))
     if(!flss.includes('api')){
         fs.mkdirSync(path.join(rootDir,'api'),{ recursive: true });
@@ -46,4 +46,4 @@ function createApi(){
     })
 }
 
-module.exports = createApi
+module.exports = create_api

@@ -7,7 +7,9 @@ const rootDir = process.cwd()
 const download = require('download-git-repo')
 const inquirer = require('inquirer');
 const { program } = require('commander');
-const pkgConfig = require('../package.json')
+const actionConfigure = require('../helpers/actionConfigure')
+const middlewareConfigure = require('../helpers/middlewareConfigure')
+const globalMiddlewareConfigure = require('../helpers/globalMiddlewareConfigure')
 
 async function checkPath(moduule,pathh,root,method){
     return new Promise((resolve,reject)=>{
