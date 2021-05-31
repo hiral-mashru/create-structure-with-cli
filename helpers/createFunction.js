@@ -1,12 +1,8 @@
-var Spinner = require('cli-spinner').Spinner;
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk')
-const Confirm = require('prompt-confirm')
 const rootDir = process.cwd()
-const download = require('download-git-repo')
 const inquirer = require('inquirer');
-const { program } = require('commander');
 
 function createFunction(mdl){
     let files = fs.readdirSync(path.join(rootDir,'api',mdl))

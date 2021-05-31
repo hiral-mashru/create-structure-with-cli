@@ -1,12 +1,8 @@
-var Spinner = require('cli-spinner').Spinner;
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk')
-const Confirm = require('prompt-confirm')
 const rootDir = process.cwd()
-const download = require('download-git-repo')
 const inquirer = require('inquirer');
-const { program } = require('commander');
 const createModule = require('../helpers/createModule')
 const createFunction = require('../helpers/createFunction')
 const createGlobalFunction = require('../helpers/createGlobalFunction')

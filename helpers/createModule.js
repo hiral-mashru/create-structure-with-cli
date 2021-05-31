@@ -1,13 +1,9 @@
-var Spinner = require('cli-spinner').Spinner;
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk')
-const Confirm = require('prompt-confirm')
 const [,,...args] = process.argv // to parse command line arguments
 const[type,...modulle] = args
 const rootDir = process.cwd()
-const download = require('download-git-repo')
-const inquirer = require('inquirer');
 
 function createModule(m){
     let f = fs.readdirSync(rootDir)
